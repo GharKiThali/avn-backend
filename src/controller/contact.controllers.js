@@ -1,5 +1,5 @@
 const contactModel = require('../models/contact.models ');
-const tsModel = require('../models/ts.usermodel');
+
 
 
 const contact = async (req, res) => {

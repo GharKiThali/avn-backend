@@ -6,19 +6,18 @@ const app = express();
 const userRoutes = require("./routes/user.routes");
 const profileRoutes = require("./routes/profile.routes.js");
 const contactRoutes = require("./routes/contact.routes.js");
-const razorpayRoutes = require("./routes/payment.routes.js");
+
 const authRoutes = require('./routes/authRoutes');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser"); 
 
-app.use(morgan("tiny")); 
+app.use(morgan("tiny"));
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://aviyukt.vercel.app'
+  'https://avn-three.vercel.app'
 ];
-
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -40,7 +39,7 @@ app.use(bodyParser.json());
 app.use("/user", userRoutes);
 app.use("/profile", profileRoutes);
 app.use("/contact", contactRoutes);
-app.use('/razorpay', razorpayRoutes);
+
 app.use('/api/auth', authRoutes);
 
 
