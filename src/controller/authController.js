@@ -52,30 +52,53 @@ exports.verifyOTP = (req, res) => {
   }
 };
 
+
+
 // Reset Password
+
 exports.resetPassword = async (req, res) => {
   const { email, newPassword } = req.body;
 
+  console.log("Reset password request received for:", email);
+
+  // Validation
+  if (!email || !newPassword) {
+    return res.status(400).send({ message: 'Email and new password are required.' });
+  }
+
+  // Check OTP
   if (!otpStore[email]) {
+    console.log("OTP not verified or expired for:", email);
     return res.status(400).send({ message: 'OTP not verified or expired!' });
   }
 
   try {
+    // Find user by email
     const user = await userModel.findOne({ email });
     if (!user) {
+      console.log("User not found:", email);
       return res.status(404).send({ message: 'User not found' });
     }
 
+    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user password
     user.password = hashedPassword;
     await user.save();
 
+    // Clear OTP
     delete otpStore[email];
-    res.send({ message: 'Password reset successful!' });
+
+    console.log("Password reset successful for:", email);
+    return res.status(200).send({ message: 'Password reset successful!' });
 
   } catch (error) {
     console.error('Error resetting password:', error);
-    res.status(500).send({ message: 'Something went wrong, please try again later.' });
+    return res.status(500).send({ 
+      message: 'Something went wrong, please try again later.',
+      error: error.message
+    });
   }
 };
 
